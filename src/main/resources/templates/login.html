@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" th:src="@{/js/jquery-2.1.4.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jsbn.js}"></script>
+<script type="text/javascript" th:src="@{/js/prng4.js}"></script>
+<script type="text/javascript" th:src="@{/js/rng.js}"></script>
+<script type="text/javascript" th:src="@{/js/jsbn2.js}"></script>
+<script type="text/javascript" th:src="@{/js/base64.js}"></script>
+<script type="text/javascript" th:src="@{/js/rsa.js}"></script>
+<script type="text/javascript" th:src="@{/js/rsa2.js}"></script>
+<title>登录</title>
+</head>
+<body>
+<form id="login-form" name="login" onsubmit="return false;">
+<fieldset>
+
+<input type="hidden" name="pubKey" id="pubKey" th:value="${pubKey}" value="keys">
+
+<input type="hidden" name="pubExep" id="pubExep" th:value="${pubExep}">
+
+<input type="hidden" name="modulus" id="modulus" th:value="${modulus}" value="modulus">
+
+<label for="username">用户名：</label><input id="username" name="username" placeholder="username">
+
+<br>
+
+<label for="password">密码：</label><input id="password" name="password" type="password" placeholder="password">
+
+<br>
+<input type="submit" value="登录">
+</fieldset>
+</form>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#login-form').on('submit', function() {
+		
+		var pubKey = $('#pubKey').val()
+		
+		if (null != pubKey) {
+			pubKey = pubKey.trim();
+		}
+		
+		var username = $('#username').val()
+		
+		var modulus = $('#modulus').val()
+		
+		var e = $('#pubExep').val()
+		
+		if (null != username) {
+			username = username.trim()
+		}
+		
+		if (null != password) {
+			password = password.trim()
+		}
+		
+		if (null != modulus) {
+			modulus = modulus.trim(); // 模，BigInteger
+		}
+		
+		var password = $('#password').val()
+		
+		// 启用RSA加密
+		var rsa = new RSAKey()
+		rsa.setPublic(modulus, e)
+		
+		var pwdEncrypt = rsa.encrypt(password) // 密文
+		
+		pwdEncrypt=hex2b64(pwdEncrypt)
+		
+		var $form = $("<form></form")
+		
+		var $inputUser = $("<input name=\"username\">")
+		
+		$inputUser.val(username)
+		
+		var $inputPwd = $("<input name=\"password\">")
+		$inputPwd.val(pwdEncrypt)
+		
+		var $key = $("<input name=\"pubKey\">");
+		$key.val(pubKey)
+		
+		$form.append($inputUser)
+		$form.append($inputPwd)
+		$form.append($key)
+		
+		$form.attr('action', "/login")
+		$form.attr('method', 'post')
+		
+		$('body').append($form)
+		
+		$form.submit()
+		
+		return false;
+	})
+})
+</script>
+</body>
+</html>
