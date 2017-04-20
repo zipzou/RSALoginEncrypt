@@ -2,7 +2,6 @@ package site.franksite.encrypt.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.HashMap;
 import java.util.Map;
